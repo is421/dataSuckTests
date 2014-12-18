@@ -12,8 +12,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.Select;
+import java.util.*;
+import java.io.*;
 import org.openqa.selenium.remote.SessionId;
 
+import java.io.FileReader;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -76,19 +80,120 @@ public class WebDriverWithHelperTest implements SauceOnDemandSessionIdProvider {
 
     @Test
     public void webDriverWithHelper() throws Exception {
-        String baseUrl="http://puppet.srihari.guru:80";
+        String baseUrl="http://puppet.srihari.guru";
         driver.get(baseUrl+ "/dashboard");
+        ArrayList<String> accounts = new ArrayList<String>();
+        String line =null;
+        accounts.add("datasucksalot@gmail.com");
+        accounts.add("fucktheData");
+        accounts.add("Gmail");
+        accounts.add("datasucksalot@gmail.com");
+        accounts.add("fucktheData");
+        accounts.add("datasuckalot@gmail.com");
+        accounts.add("fucktheData");
+        accounts.add("datasucksalot@gmail.com");
+        accounts.add("fucktheData");
+
+        mainLogin(accounts.get(0), accounts.get(1));
+        imap(accounts.get(2), accounts.get(3), accounts.get(4));
+        //fb(accounts.get(5), accounts.get(6));
+        //twit(accounts.get(7), accounts.get(8));
+    }
+
+
+    public void mainLogin(String name, String pass) {
+        String baseUrl="http://puppet.srihari.guru/";
+
+        driver.get(baseUrl);
+        WebElement username = driver.findElement(By.name("username"));
+        WebElement password = driver.findElement(By.name("password"));
+        WebElement btn = driver.findElement(By.cssSelector("input[value=\"Signin\"]"));
+
+        //Enter and submit user info
+        username.sendKeys(name);
+        password.sendKeys(pass);
+        btn.submit();
+
+        if(driver.getCurrentUrl().equals("localhost")){
+            System.exit(0);
+        }
+    }
+
+    public void imap(String host, String name, String pass){
+        String baseUrl="http://puppet.srihari.guru/";
+        driver.get(baseUrl + "dashboard");
+        Select dropHost = new Select(driver.findElement(By.name("host")));
+        dropHost.selectByVisibleText(host);
+
+        WebElement username = driver.findElement(By.name("username"));
+        WebElement password = driver.findElement(By.name("password"));
+        WebElement btn = driver.findElement(By.cssSelector("input[value=\"Link\"]"));
+
+        username.sendKeys(name);
+        password.sendKeys(pass);
+        btn.submit();
+
+//	     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        if(driver.findElements(By.cssSelector(".alert.alert-danger")).size() != 0){
+            System.out.println(driver.findElement(By.cssSelector(".alert.alert-danger")).getText());
+        } else {
+            System.out.println(driver.findElement(By.cssSelector(".alert.alert-success")).getText() + " of " + host + " account");
+        }
+
+    }
+
+    public void fb(String name, String pass){
+        String baseUrl="http://puppet.srihari.guru/";
+        driver.get(baseUrl + "dashboard");
+
+        WebElement fbBtn = driver.findElement(By.cssSelector("a[href=\"/auth/facebook\"]"));
+        fbBtn.click();
 
         WebElement username = driver.findElement(By.cssSelector("input[name=\"username\"]"));
         WebElement password = driver.findElement(By.cssSelector("input[name=\"password\"]"));
         WebElement loginbtn  = driver.findElement(By.cssSelector("input[value=\"Signin\"]"));
-        username.sendKeys("datasucksalot@gmail.com");
-        password.sendKeys("fucktheData");
+        username.sendKeys(name);
+        password.sendKeys(pass);
         loginbtn.click();
-        WebElement fbBtn = driver.findElement(By.cssSelector("a[href=\"/auth/facebook\"]"));
 
-        fbBtn.click();
+        if(driver.findElements(By.cssSelector("div[class=\"pam login_error_box uiBoxRed\"]")).size() != 0){
+            System.out.println(driver.findElement(By.cssSelector("div[class=\"pam login_error_box uiBoxRed\"]")).getText());
+        } else {
+            WebElement okay = driver.findElement(By.cssSelector("button[name=\"__CONFIRM__\"]"));
+            okay.submit();
+            System.out.println("Success!");
+        }
+
     }
+
+    public void twit(String name, String pass){
+        String baseUrl="http://puppet.srihari.guru/";
+        driver.get(baseUrl + "dashboard");
+        WebElement twitBtn = driver.findElement(By.cssSelector("a[href=\"/auth/twitter\"]"));
+
+        twitBtn.click();
+
+
+
+        WebElement username = driver.findElement(By.cssSelector("input[class=\"text\"]"));
+        WebElement password = driver.findElement(By.cssSelector("input[class=\"password text\"]"));
+        WebElement signin  = driver.findElement(By.cssSelector("input[class=\"submit button selected\"]"));
+        username.sendKeys(name);
+        password.sendKeys(pass);
+        signin.submit();
+
+        if(driver.findElements(By.cssSelector("span[class=\"message-text\"]")).size() != 0){
+            System.out.println(driver.findElement(By.cssSelector("span[class=\"message-text\"]")).getText());
+        } else {
+            WebElement authorize = driver.findElement(By.cssSelector("input[value=\"Authorize app\"]"));
+            authorize.click();
+            System.out.println("Success!");
+        }
+//        String text = driver.findElement(By.cssSelector("span[class=\"message-text\"]")).getText();
+//        System.out.println(text);
+
+    }
+
 
     @After
     public void tearDown() throws Exception {
