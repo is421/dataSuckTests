@@ -96,6 +96,7 @@ public class WebDriverWithHelperTest implements SauceOnDemandSessionIdProvider {
 
         mainLogin(accounts.get(0), accounts.get(1));
         imap(accounts.get(2), accounts.get(3), accounts.get(4));
+        //Need to update CSS selectors for FB/Twitter
         //fb(accounts.get(5), accounts.get(6));
         //twit(accounts.get(7), accounts.get(8));
     }
