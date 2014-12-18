@@ -2,5 +2,5 @@ language: java
 notifications:
     hipchat: 
         rooms:
-            - "fa00aa2f20dfb156e23b6d0acd53c0"@"DataSucks Notifications"
+            - fa00aa2f20dfb156e23b6d0acd53c0@DataSucks Notifications
         notify: true
