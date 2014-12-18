@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
  * *
  * @author Ross Rowe
  */
-public class WebDriverTest {
+public class FB {
 
     private WebDriver driver;
 
